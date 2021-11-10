@@ -1,82 +1,16 @@
+from Domain.lista_undo_redo import create_cheltuieli, get_lista_curenta
 from Logic.Adaugare import adaugare_cheltuieli
 from Logic.Stergere import stergere_cheltuieli, stergere_totala_cheltuieli_camera
 from Logic.Modificare import modificare_cheltuieli
+from Logic.afisare_sume_lunare import afisare_sume_lunare
 from Logic.determinare_cheltuieli import determinare_max_cheltuieli_pentru_fiecare_tip_de_cheltuieli
 from Logic.Validare import validare_inputs, validare_numar_apartament
 from Domain.cheltuieli import to_string
 
 from Logic.ordonare_cheltuieli import ordonare_cheltuieli_desc
+from Logic.undo_redo import apply_redo, apply_undo
 
-
-# add,15,55,123,11.12.2021,intretinere;showall
-
-def print_command_line_help_console():
-    print("""
-Trebuie să putem da comenzi dupa cum urmeaza:
-    -add, 1, nume, descriere, 32, 321, 2000;
-    -showall;
-    -delete, 3
-Totul pe o singură linie și să fie executate toate.
-Separatorii pot fi orice.
-Să implementeze minim 3 comenzi.
-Implementarea trebuie facuta într-un fișier nou.
-Noua interfata trebuie sa aiba si un help afisat care explica cum trebuie folosite comenzile
-""")
-
-
-def print_command_line_console():
-    print("""
-showall. Nu știu încă.
-add. Adaugă ceva.
-delete. Șterge ceva.
-b. Back.
-h. Help
-x. Exit. (E bug încă n-am găsit rezolvare.)
-""")
-
-
-def command_line_console():
-    lista_command_line = []
-    stop = True
-    while True and stop:
-        print_command_line_console()
-        cmd = input('Introduceți comanda: ')
-        cmd_split = cmd.split(';')
-        for el in range(0, len(cmd_split)):
-            el_split = cmd_split[el].split(',')
-            if el_split[0] == 'add':
-
-                id_ul = el_split[1]
-                nr_apartament = el_split[2]
-                suma = el_split[3]
-                data = el_split[4]
-                tip = el_split[5]
-                try:
-                    validare_inputs(id_ul, nr_apartament, suma, data, tip)
-                    adaugare_cheltuieli(lista_command_line, id_ul, nr_apartament, suma, data, tip)
-                except ValueError as ve:
-                    print(ve)
-
-            elif el_split[0] == 'delete':
-                # print('Aici execut delete command:')
-                nr_apartament = el_split[1]
-                try:
-                    validare_numar_apartament(nr_apartament)
-                    stergere_cheltuieli(lista_command_line, nr_apartament)
-                except ValueError as vs:
-                    print(vs)
-            elif el_split[0] == 'showall':
-                # print('Aici execut showall: ')
-                for elem in lista_command_line:
-                    print(to_string(elem))
-            elif el_split[0] == 'b':
-                menu_add_del_mod()
-            elif el_split[0] == 'h':
-                print_command_line_help_console()
-            elif el_split[0] == 'x':
-                print('execut x')
-                stop = False
-    return lista_command_line
+from UI.command_line import command_line_console
 
 
 def print_menu_add_del_mod():
@@ -84,21 +18,24 @@ def print_menu_add_del_mod():
 1. Adaugă înregistrare.
 2. Modifica înregistrare.
 3. Șterge înregistrare.
-4. Ștergerea tuturor cheltuielilor pentru un apartament dat.  ####
+4. Ștergerea tuturor cheltuielilor pentru un apartament dat.
 5. Determinare max cheltuieli in următoarea ordine (întreținere, canal, alte cheltuieli). 
-6. Ordonare lista in ordine descrescătoare după sumă.  ####
+6. Ordonare lista in ordine descrescătoare după sumă.
 7. Afișare lista.
-g. command line console. 
+8. Afișarea sumelor lunare pentru fiecare apartament.
+g. command line console.
+u. Undo 
+r. Redo  
 x. Exit
 """)
 
-
 def menu_add_del_mod():
-    lista = [{"id": '1', 'numar_apartament': '12', 'suma': '1024', 'data': '11.12.2002', 'tip': 'canal'},
-             {"id": '2', 'numar_apartament': '7', 'suma': '24', 'data': '11.12.2002', 'tip': 'intretinere'},
-             {"id": '3', 'numar_apartament': '12', 'suma': '112.32', 'data': '11.12.2002', 'tip': 'alte cheltuieli'},
-             {"id": '4', 'numar_apartament': '8', 'suma': '5132.321', 'data': '11.12.2002', 'tip': 'canal'},
-             {"id": '5', 'numar_apartament': '12', 'suma': '2132.321', 'data': '11.12.2002', 'tip': 'alte cheltuieli'}]
+    lista = create_cheltuieli()
+    adaugare_cheltuieli(lista, '1', '15', '5', '11.12.2002', 'intretinere')
+    adaugare_cheltuieli(lista, '2', '32', '13', '13.12.2002', 'canal')
+    adaugare_cheltuieli(lista, '3', '44', '99.99', '11.12.2021', 'alte cheltuieli')
+    adaugare_cheltuieli(lista, '4', '102', '11.23', '15.12.2021', 'canal')
+    adaugare_cheltuieli(lista, '5', '99', '12.21', '17.05.2002', 'intretinere')
     while True:
         print_menu_add_del_mod()
         cmd = input("Introduceți comanda: ")
@@ -153,10 +90,26 @@ def menu_add_del_mod():
             print("Lista a fost ordonată cu succes !!!")
             pass
         elif cmd == '7':
-            for elem in lista:
+            for elem in get_lista_curenta(lista):
                 print(to_string(elem))
+        elif cmd == '8':
+            get_lista = get_lista_curenta(lista)
+            for_for = afisare_sume_lunare(get_lista)
+            for elem in for_for:
+                print(elem, for_for[elem])
         elif cmd == 'g':
-            lista.append(command_line_console())
+            if command_line_console() == -1:
+                break
+            else:
+                lista.append(command_line_console())
+        elif cmd == 'u':
+            apply_undo(lista)
+            print('Undo facut cu succes')
+            pass
+        elif cmd == 'r':
+            apply_redo(lista)
+            print('Redo facut cu succes')
+            pass
         elif cmd == 'x':
             break
         else:

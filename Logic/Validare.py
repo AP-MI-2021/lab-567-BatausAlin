@@ -3,6 +3,15 @@ def return_type_of_room(tip):
 
 
 def validare_inputs(id, numar_apartament, suma, data, tip):
+    """
+    Validare inputs
+    :param id: id
+    :param numar_apartament: numar apartament
+    :param suma: suma
+    :param data: data
+    :param tip: tip
+    :return:
+    """
     errors = []
     if id == '':
         errors.append('Id-ul nu poate fi vid.')
@@ -16,7 +25,7 @@ def validare_inputs(id, numar_apartament, suma, data, tip):
         errors.append('Tipul nu poate fi vid.')
 
     try:
-        numar_apartament = float(numar_apartament)
+        numar_apartament = int(numar_apartament)
         if numar_apartament <= 0:
             errors.append('Numărul de la apartament incepe de la 1.')
     except ValueError:
@@ -38,8 +47,14 @@ def validare_inputs(id, numar_apartament, suma, data, tip):
     if len(errors) != 0:
         raise ValueError(errors)
 
+    return id, str(numar_apartament), suma, data, tip
 
 def validare_numar_apartament(numar_apartament):
+    """
+    Validare număr apartament.
+    :param numar_apartament: numărul de la apartament.
+    :return:
+    """
     errors = []
     numar_apartament = str(numar_apartament)
     if numar_apartament == '':

@@ -1,4 +1,5 @@
 from Domain.cheltuieli import get_tip_apartament, get_suma
+from Domain.lista_undo_redo import adaugare_lista_undo_and_clear_redo, get_lista_curenta
 
 
 def determinare_max_cheltuieli_pentru_fiecare_tip_de_cheltuieli(cheltuieli):
@@ -10,7 +11,10 @@ def determinare_max_cheltuieli_pentru_fiecare_tip_de_cheltuieli(cheltuieli):
     max_intretinere = 0
     max_alte_cheltuieli = 0
 
-    for elem in cheltuieli:
+    adaugare_lista_undo_and_clear_redo(cheltuieli)
+    lista_curenta = get_lista_curenta(cheltuieli)
+
+    for elem in lista_curenta:
         if get_tip_apartament(elem) == "Intretinere" or get_tip_apartament(elem) == "intretinere":
             if float(get_suma(elem)) > max_intretinere:
                 max_intretinere = float(get_suma(elem))

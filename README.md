@@ -36,11 +36,11 @@ Temele se predau exclusiv într-un IDE (PyCharm, VS Code etc.).
 1. Scrieți un program pentru gestionarea unei asociații de proprietari. Vor fi suportate operațiile:  
 #   1.1. Adăugare / ștergere / modificare cheltuială: se efectuează pe bază de număr de apartament. O cheltuială conține număr apartament, suma, data (`DD.MM.YYYY`) și tipul: `întreținere`, `canal`, `alte cheltuieli`.  
 #   1.2. Ștergerea tuturor cheltuielilor pentru un apartament dat.  
-   1.3. Adunarea unei valori la toate cheltuielile dintr-o dată citită.  
+#   1.3. Adunarea unei valori la toate cheltuielile dintr-o dată citită.  
 #   1.4. Determinarea celei mai mari cheltuieli pentru fiecare tip de cheltuială.  
 #   1.5. Ordonarea cheltuielilor descrescător după sumă.
-   1.6. Afișarea sumelor lunare pentru fiecare apartament.  
-   1.7. Undo.  
+#   1.6. Afișarea sumelor lunare pentru fiecare apartament.  
+#   1.7. Undo + Redo.  
 
 2. Scrieți un program pentru gestionarea unui inventar dintr-o instituție. Vor fi suportate operațiile:  
    2.1. Adăugare / ștergere / modificare obiect: se efectuează pe bază de număr de inventar / ID. Un obiect conține: ID, nume, descriere (nenule), preț achiziție, locație (exact `4` caractere).  
