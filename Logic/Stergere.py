@@ -16,6 +16,16 @@ def find_prajitura(cheltuieli, numar_apartament):
             return elem
     return None
 
+def stergere_cheltuieli_v2(cheltuieli, numar_apartament):
+    """ Șterge prima cheltuială pe care o gasește. """
+    index = 0
+    for elem in cheltuieli:
+        if get_numar_apartament(elem) == numar_apartament:
+            cheltuieli.pop(index)
+            break
+        index += 1
+
+
 
 def stergere_cheltuieli(cheltuieli, numar_apartament):
     """ Șterge prima cheltuială pe care o gasește. """
@@ -39,8 +49,14 @@ def stergere_totala_cheltuieli_camera(cheltuieli, numar_apartament):
     adaugare_lista_undo_and_clear_redo(cheltuieli)
     get_lista = get_lista_curenta(cheltuieli)
 
-    for elem in get_lista:
-        if numar_apartament == get_numar_apartament(elem):
-            stergere_cheltuieli(cheltuieli, numar_apartament)
-            stergere_totala_cheltuieli_camera(cheltuieli, numar_apartament)
+
+    stop = True
+
+    while stop:
+        stop = False
+        for elem in get_lista:
+            if numar_apartament == get_numar_apartament(elem):
+                stergere_cheltuieli_v2(get_lista, numar_apartament)
+                stop = True
+                # stergere_totala_cheltuieli_camera(cheltuieli, numar_apartament)
 
